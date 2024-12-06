@@ -82,6 +82,10 @@ a {
   font-weight: bold;
 }
 
+#logout {
+  color:#d9534f;
+}
+
 a:hover {
   text-decoration: underline;
 }
