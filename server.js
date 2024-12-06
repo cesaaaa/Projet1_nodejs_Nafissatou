@@ -2,7 +2,6 @@ const express = require("express");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const session = require("express-session");
-
 const app = express();
 const port = 3000;
 
@@ -74,10 +73,10 @@ app.get("/admin", (req, res) => {
 
 // Ajouter un utilisateur
 app.post("/admin/add", (req, res) => {
-    const { username, password, role } = req.body;
+    const { username, password, role, nom, mail, tel } = req.body;
 
-    const query = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
-    db.query(query, [username, password, role], (err) => {
+    const query = "INSERT INTO users (username, password, role, nom, mail, tel) VALUES (?, ?, ?, ?, ?, ?)";
+    db.query(query, [username, password, role, nom, mail, tel], (err) => {
         if (err) throw err;
         res.redirect("/admin");
     });
@@ -98,24 +97,25 @@ app.get('/admin/edit/:id', (req, res) => {
 
 app.post('/admin/edit/:id', (req, res) => {
     const userId = req.params.id;
-    const { username, role } = req.body;
+    const { username, role, nom, mail, tel } = req.body;
 
-    db.query('UPDATE users SET username = ?, role = ? WHERE id = ?', [username, role, userId], (err) => {
+    db.query('UPDATE users SET username = ?, role = ?, nom=?, mail=?, tel=? WHERE id = ?', [username, role, nom, mail, tel, userId], (err) => {
         if (err) throw err;
-        res.redirect('/admin'); // Redirige vers le tableau de bord des utilisateurs
+        res.redirect('/admin'); 
     });
 });
 
 // Supprimer un utilisateur
-app.post("/admin/delete", (req, res) => {
-    const { id } = req.body;
+app.post("/admin/delete/:id", (req, res) => {
+  const userId = req.params.id; 
 
-    const query = "DELETE FROM users WHERE id = ?";
-    db.query(query, [id], (err) => {
-        if (err) throw err;
-        res.redirect("/admin");
-    });
+  const query = "DELETE FROM users WHERE id = ?";
+  db.query(query, [userId], (err) => {
+      if (err) throw err;
+      res.redirect("/admin");
+  });
 });
+
 
 // Dashboard utilisateur
 app.get("/user", (req, res) => {
@@ -144,9 +144,9 @@ app.get("/user/edit", (req, res) => {
 
 app.post("/user/edit", (req, res) => {
     const userId = req.session.user.id;
-    const { username, password } = req.body;
+    const { password, nom, mail, tel } = req.body;
 
-    db.query("UPDATE users SET username = ?, password = ? WHERE id = ?", [username, password, userId], (err) => {
+    db.query("UPDATE users SET password = ?, nom = ?, mail = ?, tel = ? WHERE id = ?", [password, nom, mail, tel, userId], (err) => {
         if (err) throw err;
         res.redirect("/user");
     });

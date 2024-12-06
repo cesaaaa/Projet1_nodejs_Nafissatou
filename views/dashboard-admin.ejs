@@ -14,7 +14,10 @@
         <thead>
             <tr>
                 <th>ID</th>
+                <th>Nom</th>
                 <th>Nom d'utilisateur</th>
+                <th>Email</th>
+                <th>Téléphone</th>
                 <th>Rôle</th>
                 <th>Actions</th>
             </tr>
@@ -23,7 +26,10 @@
             <% users.forEach(user => { %>
                 <tr>
                     <td><%= user.id %></td>
+                    <td><%= user.nom %></td>
                     <td><%= user.username %></td>
+                    <td><%= user.mail %></td>
+                    <td><%= user.tel %></td>
                     <td><%= user.role %></td>
                     <td>
                         <form action="/admin/edit/<%= user.id %>" method="GET" style="display: inline;">
@@ -31,7 +37,7 @@
                         </form>
                         <form action="/admin/delete/<%= user.id %>" method="POST" style="display: inline;">
                             <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">Supprimer</button>
-                        </form>
+                        </form>                                                
                     </td>
                 </tr>
             <% }); %>
@@ -40,15 +46,28 @@
     <div class="container">
     <h2>Ajouter un utilisateur</h2>
     <form action="/admin/add" method="POST">
+        
+        <label>Nom :</label>
+        <input type="text" name="nom" required>
+        
         <label>Nom d'utilisateur :</label>
         <input type="text" name="username" required>
+        
         <label>Mot de passe :</label>
         <input type="password" name="password" required>
+
+        <label for="mail">Email:</label>
+        <input type="email" id="mail" name="mail" required>
+
+        <label for="tel">Téléphone:</label>
+        <input type="text" id="tel" name="tel">
+        
         <label>Rôle :</label>
         <select name="role">
             <option value="admin">Admin</option>
             <option value="user">Utilisateur</option>
         </select>
+        
         <button type="submit">Ajouter</button>
     </form>
 </div>

@@ -8,11 +8,12 @@
 </head>
 <body>
     <div class="container">
-        <h1>Bienvenue, <%= user.username %> !</h1>
-        <p>Votre rôle : <%= user.role %></p>
-        <p>Votre identifiant utilisateur : <%= user.id %></p>
+        <h1>Bienvenue, <%= user.role %> <%= user.nom %> !</h1>
+        <p>Email : <%= user.mail %></p>
+        <p>Tel : <%= user.tel %></p>
+        <p>Nom d'utilisateur : <%= user.username %></p>
         
-        <a href="/user/edit" class="btn">Modifier mes informations</a>
+        <a href="/user/edit" class="btn">Modifier mes informations</a><p></p>
         <a href="/logout" class="btn logout">Se déconnecter</a>
     </div>
 </body>
