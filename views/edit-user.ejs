@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier utilisateur</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Modifier utilisateur</h1>
+        <form action="/admin/edit/<%= user.id %>" method="POST">
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="text" id="username" name="username" value="<%= user.username %>" required>
+
+            <label for="role">Rôle :</label>
+            <select id="role" name="role" required>
+                <option value="admin" <%= user.role === 'admin' ? 'selected' : '' %>>Admin</option>
+                <option value="user" <%= user.role === 'user' ? 'selected' : '' %>>Utilisateur</option>
+            </select>
+
+            <input type="submit" value="Mettre à jour">
+        </form>
+    </div>
+</body>
+</html>

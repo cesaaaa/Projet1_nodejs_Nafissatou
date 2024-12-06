@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <h1>Bienvenue, Admin</h1>
+    <a href="/logout">Déconnexion</a>
+    <h2>Liste des utilisateurs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nom d'utilisateur</th>
+                <th>Rôle</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach(user => { %>
+                <tr>
+                    <td><%= user.id %></td>
+                    <td><%= user.username %></td>
+                    <td><%= user.role %></td>
+                    <td>
+                        <form action="/admin/edit/<%= user.id %>" method="GET" style="display: inline;">
+                            <button type="submit">Modifier</button>
+                        </form>
+                        <form action="/admin/delete/<%= user.id %>" method="POST" style="display: inline;">
+                            <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+    <div class="container">
+    <h2>Ajouter un utilisateur</h2>
+    <form action="/admin/add" method="POST">
+        <label>Nom d'utilisateur :</label>
+        <input type="text" name="username" required>
+        <label>Mot de passe :</label>
+        <input type="password" name="password" required>
+        <label>Rôle :</label>
+        <select name="role">
+            <option value="admin">Admin</option>
+            <option value="user">Utilisateur</option>
+        </select>
+        <button type="submit">Ajouter</button>
+    </form>
+</div>
+</body>
+</html>

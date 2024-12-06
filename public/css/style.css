@@ -1,142 +1,95 @@
-/* style.css */
-
-/* Global Styles */
+/* Style général */
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f9;
-    color: #333;
-  }
-  
-  h1, h2 {
-    text-align: center;
-    color: #444;
-  }
-  
-  a {
-    color: #0066cc;
-    text-decoration: none;
-  }
-  
-  a:hover {
-    text-decoration: underline;
-  }
-  
-  button {
-    background-color: #0066cc;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-  }
-  
-  button:hover {
-    background-color: #005bb5;
-  }
-  
-  input, select {
-    padding: 10px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 100%;
-    box-sizing: border-box;
-  }
-  
-  label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
-  }
-  
-  /* Header */
-  header {
-    background-color: #0066cc;
-    color: #fff;
-    padding: 10px 0;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  header h1 {
-    margin: 0;
-    font-size: 24px;
-  }
-  
-  /* Forms */
-  form {
-    background: #fff;
-    padding: 20px;
-    margin: 20px auto;
-    max-width: 400px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  form button {
-    display: block;
-    width: 100%;
-    margin-top: 10px;
-  }
-  
-  /* Tables */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  table thead {
-    background-color: #0066cc;
-    color: #fff;
-  }
-  
-  table th, table td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  table tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
-  /* Admin Section */
-  #adminSection {
-    padding: 20px;
-    background: #fff;
-    max-width: 800px;
-    margin: 0 auto;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-  }
-  
-  /* User Section */
-  #userSection {
-    padding: 20px;
-    background: #fff;
-    max-width: 400px;
-    margin: 0 auto;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 600px) {
-    form, #adminSection, #userSection {
-      padding: 10px;
-      max-width: 90%;
-    }
-  
-    table th, table td {
-      font-size: 14px;
-    }
-  }
-  
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+/* Centrage général */
+.container {
+  max-width: 400px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Titres */
+h1, h2, h3 {
+  text-align: center;
+  color: #444;
+}
+
+/* Formulaire */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Champs de formulaire */
+input[type="text"],
+input[type="password"],
+input[type="submit"],
+button {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+/* Bouton de soumission */
+input[type="submit"],
+button {
+  background-color: #5cb85c;
+  color: white;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover,
+button:hover {
+  background-color: #4cae4c;
+}
+
+/* Table pour l'admin */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th, table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+table th {
+  background-color: #5cb85c;
+  color: white;
+}
+
+/* Liens */
+a {
+  text-decoration: none;
+  color: #5cb85c;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Centrage pour les messages */
+.message {
+  text-align: center;
+  margin: 10px 0;
+  color: #d9534f;
+  font-weight: bold;
+}

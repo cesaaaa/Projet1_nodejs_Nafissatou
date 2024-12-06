@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord - Utilisateur</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bienvenue, <%= user.username %> !</h1>
+        <p>Votre rôle : <%= user.role %></p>
+        <p>Votre identifiant utilisateur : <%= user.id %></p>
+        
+        <a href="/user/edit" class="btn">Modifier mes informations</a>
+        <a href="/logout" class="btn logout">Se déconnecter</a>
+    </div>
+</body>
+</html>
