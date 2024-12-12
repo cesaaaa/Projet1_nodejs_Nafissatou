@@ -1,11 +1,13 @@
+// Import required modules
 const express = require("express");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const session = require("express-session");
+const multer = require("multer");
 const app = express();
 const port = 3000;
 
-// Configuration de la base de données
+// Database configuration
 const db = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -15,7 +17,7 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) throw err;
-    console.log("Base de données connectée !");
+    console.log("Database connected!");
 });
 
 // Middleware
@@ -30,8 +32,17 @@ app.use(session({
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
+// Attach user data to res.locals for all views
+app.use((req, res, next) => {
+    res.locals.user = req.session.user || null;
+    next();
+});
+
+// File upload configuration
+const upload = multer({ dest: "uploads/" });
+
 // Routes
-// Page de connexion
+// Login page
 app.get("/", (req, res) => {
     res.render("login", { error: null });
 });
@@ -46,32 +57,67 @@ app.post("/login", (req, res) => {
         if (results.length > 0) {
             req.session.loggedIn = true;
             req.session.user = results[0];
-            
-            if (results[0].role === "admin") {
-                res.redirect("/admin");
-            } else {
-                res.redirect("/user");
-            }
+
+            // Update last login
+            db.query("UPDATE users SET lastLogin = NOW() WHERE id = ?", [results[0].id], (updateErr) => {
+                if (updateErr) throw updateErr;
+            });
+
+            res.redirect(results[0].role === "admin" ? "/admin" : "/user");
         } else {
-            res.render("login", { error: "Identifiants incorrects !" });
+            res.render("login", { error: "Invalid credentials!" });
         }
     });
 });
 
-// Dashboard admin
+// Admin dashboard
 app.get("/admin", (req, res) => {
     if (!req.session.loggedIn || req.session.user.role !== "admin") {
         return res.redirect("/");
     }
 
-    const query = "SELECT * FROM users";
-    db.query(query, (err, results) => {
+    const { search = '', role = '', page = 1 } = req.query;
+    const itemsPerPage = 10;
+
+    let query = "SELECT * FROM users WHERE 1=1";
+    const params = [];
+
+    if (search) {
+        query += " AND (nom LIKE ? OR mail LIKE ?)";
+        params.push(`%${search}%`, `%${search}%`);
+    }
+    if (role) {
+        query += " AND role = ?";
+        params.push(role);
+    }
+
+    query += " LIMIT ? OFFSET ?";
+    params.push(itemsPerPage, (page - 1) * itemsPerPage);
+
+    const countQuery = "SELECT COUNT(*) as count FROM users WHERE 1=1";
+    const countParams = [...params.slice(0, -2)];
+
+    db.query(countQuery, countParams, (err, countResult) => {
         if (err) throw err;
-        res.render("dashboard-admin", { users: results });
+
+        const totalUsers = countResult[0].count;
+        const totalPages = Math.ceil(totalUsers / itemsPerPage);
+
+        db.query(query, params, (err, results) => {
+            if (err) throw err;
+
+            res.render("dashboard-admin", {
+                users: results,
+                search,
+                role,
+                currentPage: parseInt(page, 10),
+                totalPages
+            });
+        });
     });
 });
 
-// Ajouter un utilisateur
+// Add user (Admin)
 app.post("/admin/add", (req, res) => {
     const { username, password, role, nom, mail, tel } = req.body;
 
@@ -82,62 +128,63 @@ app.post("/admin/add", (req, res) => {
     });
 });
 
-// Modifier un utilisateur (Admin)
-app.get('/admin/edit/:id', (req, res) => {
+// Edit user (Admin)
+app.get("/admin/edit/:id", (req, res) => {
     const userId = req.params.id;
-    db.query('SELECT * FROM users WHERE id = ?', [userId], (err, results) => {
+
+    db.query("SELECT * FROM users WHERE id = ?", [userId], (err, results) => {
         if (err) throw err;
         if (results.length > 0) {
-            res.render('edit-user', { user: results[0] });
+            res.render("edit-user", { user: results[0] });
         } else {
-            res.send("Utilisateur introuvable !");
+            res.send("User not found!");
         }
     });
 });
 
-app.post('/admin/edit/:id', (req, res) => {
+app.post("/admin/edit/:id", (req, res) => {
     const userId = req.params.id;
     const { username, role, nom, mail, tel } = req.body;
 
-    db.query('UPDATE users SET username = ?, role = ?, nom=?, mail=?, tel=? WHERE id = ?', [username, role, nom, mail, tel, userId], (err) => {
+    db.query("UPDATE users SET username = ?, role = ?, nom = ?, mail = ?, tel = ? WHERE id = ?", [username, role, nom, mail, tel, userId], (err) => {
         if (err) throw err;
-        res.redirect('/admin'); 
+        res.redirect("/admin");
     });
 });
 
-// Supprimer un utilisateur
+// Delete user (Admin)
 app.post("/admin/delete/:id", (req, res) => {
-  const userId = req.params.id; 
+    const userId = req.params.id;
 
-  const query = "DELETE FROM users WHERE id = ?";
-  db.query(query, [userId], (err) => {
-      if (err) throw err;
-      res.redirect("/admin");
-  });
+    db.query("DELETE FROM users WHERE id = ?", [userId], (err) => {
+        if (err) throw err;
+        res.redirect("/admin");
+    });
 });
 
-
-// Dashboard utilisateur
+// User dashboard
 app.get("/user", (req, res) => {
     if (!req.session.loggedIn || req.session.user.role !== "user") {
         return res.redirect("/");
     }
+
     res.render("dashboard-user", { user: req.session.user });
 });
 
-// Modifier ses infos personnelles (Utilisateur)
+// Edit user profile (User)
 app.get("/user/edit", (req, res) => {
     if (!req.session.loggedIn || req.session.user.role !== "user") {
         return res.redirect("/");
     }
 
     const userId = req.session.user.id;
+
     db.query("SELECT * FROM users WHERE id = ?", [userId], (err, results) => {
         if (err) throw err;
         if (results.length > 0) {
             res.render("edit-profile", { user: results[0] });
         } else {
-            res.send("Utilisateur introuvable !");
+            res.send("User not found!");
         }
     });
 });
@@ -152,13 +199,25 @@ app.post("/user/edit", (req, res) => {
     });
 });
 
-// Déconnexion
+// Upload profile picture (User)
+app.post("/user/upload-profile", upload.single("profilePic"), (req, res) => {
+    const userId = req.session.user.id;
+    const profilePath = `/uploads/${req.file.filename}`;
+
+    db.query("UPDATE users SET profilePicture = ? WHERE id = ?", [profilePath, userId], (err) => {
+        if (err) throw err;
+        req.session.user.profilePicture = profilePath;
+        res.redirect("/user");
+    });
+});
+
+// Logout
 app.get("/logout", (req, res) => {
     req.session.destroy();
     res.redirect("/");
 });
 
-// Lancement du serveur
+// Start server
 app.listen(port, () => {
-    console.log(`Serveur lancé sur http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });

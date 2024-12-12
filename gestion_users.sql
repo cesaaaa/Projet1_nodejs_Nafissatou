@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : ven. 06 déc. 2024 à 13:08
+-- Généré le : mer. 11 déc. 2024 à 23:05
 -- Version du serveur : 8.0.31
 -- Version de PHP : 8.0.26
 
@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `nom` varchar(255) DEFAULT NULL,
   `mail` varchar(50) DEFAULT NULL,
   `tel` varchar(9) DEFAULT NULL,
+  `lastLogin` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -43,11 +44,11 @@ CREATE TABLE IF NOT EXISTS `users` (
 -- Déchargement des données de la table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `nom`, `mail`, `tel`) VALUES
-(6, 'nafi', '1234', 'admin', 'Nafissatou C Ly', 'nafi@gmail.com', '776547899'),
-(4, 'user', '0000', 'user', 'User1', 'use1@gmail.com', '776459061'),
-(5, 'mohamed', '1234', 'admin', 'Mohamed Ndiaye', 'mondiay@gmail.com', '778606002'),
-(10, 'fadiop', '1234', 'user', 'Fatou Diop', 'fadiop@gmail.com', '776598080');
+INSERT INTO `users` (`id`, `username`, `password`, `role`, `nom`, `mail`, `tel`, `lastLogin`) VALUES
+(6, 'nafi', '1234', 'admin', 'Nafissatou C Ly', 'nafi@gmail.com', '776547899', NULL),
+(4, 'user', '0000', 'user', 'User1', 'use1@gmail.com', '776459061', NULL),
+(5, 'mohamed', '1234', 'admin', 'Mohamed Ndiaye', 'mondiay@gmail.com', '778606002', NULL),
+(10, 'fadiop', '1234', 'user', 'Fatou Diop', 'fadiop@gmail.com', '776598080', NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

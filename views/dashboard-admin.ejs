@@ -4,72 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/styleadmin.css">
+
+    <script src="https://kit.fontawesome.com/e37500ecc9.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <h1>Bienvenue, Admin</h1>
-    <a id="logout" href="/logout">Déconnexion</a>
-    <h2>Liste des utilisateurs</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Nom d'utilisateur</th>
-                <th>Email</th>
-                <th>Téléphone</th>
-                <th>Rôle</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% users.forEach(user => { %>
-                <tr>
-                    <td><%= user.id %></td>
-                    <td><%= user.nom %></td>
-                    <td><%= user.username %></td>
-                    <td><%= user.mail %></td>
-                    <td><%= user.tel %></td>
-                    <td><%= user.role %></td>
-                    <td>
-                        <form action="/admin/edit/<%= user.id %>" method="GET" style="display: inline;">
-                            <button type="submit">Modifier</button>
-                        </form>
-                        <form action="/admin/delete/<%= user.id %>" method="POST" style="display: inline;">
-                            <button type="submit" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">Supprimer</button>
-                        </form>                                                
-                    </td>
-                </tr>
-            <% }); %>
-        </tbody>
-    </table>
+    <header>
+        <h1>Bienvenue, <%= user.role %> <%= user.nom %> !</h1>
+        <a class="logout" href="/logout" aria-label="Se déconnecter">Déconnexion</a>
+    </header>
+
     <div class="container">
-    <h2>Ajouter un utilisateur</h2>
-    <form action="/admin/add" method="POST">
-        
-        <label>Nom :</label>
-        <input type="text" name="nom" required>
-        
-        <label>Nom d'utilisateur :</label>
-        <input type="text" name="username" required>
-        
-        <label>Mot de passe :</label>
-        <input type="password" name="password" required>
+        <!-- Table -->
+        <section class="table-container">
+          
+            <div class="search-container">
+                <form action="/admin" method="GET">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        placeholder="Rechercher par nom ou email" 
+                        value="<%= search || '' %>"
+                        aria-label="Rechercher un utilisateur"
+                    >
+                    <select name="role" aria-label="Sélectionner un rôle">
+                        <option value="">Tous les rôles</option>
+                        <option value="admin" <%= role === 'admin' ? 'selected' : '' %>>Admin</option>
+                        <option value="user" <%= role === 'user' ? 'selected' : '' %>>Utilisateur</option>
+                    </select>
+                    <button type="submit">Rechercher</button>
+                </form>
+            </div>
 
-        <label for="mail">Email:</label>
-        <input type="email" id="mail" name="mail" required>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Téléphone</th>
+                        <th>Rôle</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (users.length === 0) { %>
+                        <tr>
+                            <td colspan="7">Aucun utilisateur trouvé.</td>
+                        </tr>
+                    <% } else { %>
+                        <% users.forEach(user => { %>
+                            <tr>
+                                <td><%= user.id %></td>
+                                <td><%= user.nom %></td>
+                                <td><%= user.username %></td>
+                                <td><%= user.mail %></td>
+                                <td><%= user.tel %></td>
+                                <td><%= user.role %></td>
+                                <td class="actions">
+                                    <form action="/admin/edit/<%= user.id %>" method="GET">
+                                        <button type="submit">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </button>
+                                    </form>
+                                    <form action="/admin/delete/<%= user.id %>" method="POST">
+                                        <button type="submit" class="delete" onclick="return confirm('Voulez-vous vraiment supprimer cet utilisateur ?');">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    <% } %>
+                </tbody>
+            </table>
 
-        <label for="tel">Téléphone:</label>
-        <input type="text" id="tel" name="tel">
-        
-        <label>Rôle :</label>
-        <select name="role">
-            <option value="admin">Admin</option>
-            <option value="user">Utilisateur</option>
-        </select>
-        
-        <button type="submit">Ajouter</button>
-    </form>
-</div>
+            <!-- Pagination -->
+            <div class="pagination">
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>&search=<%= search %>&role=<%= role %>" class="<%= i === currentPage ? 'active' : '' %>"><%= i %></a>
+                <% } %>
+            </div>
+        </section>
+
+        <!-- Add User Form -->
+        <section class="add-user-container">
+            <h3>Ajouter un utilisateur</h3>
+            <div></div>
+            <section class="container1">
+            <form class="row g-3">
+                <div class="col-md-6">
+                  <label for="nom">Nom:</label>
+                  <input type="text" name="nom" id="nom" placeholder="votrenom" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="role">Rôle:</label><br>
+                      <select name="role" id="role">
+                         <option value="admin">Admin</option>
+                         <option value="user">Utilisateur</option>
+                      </select>
+                </div>
+                <div class="col-md-6">
+                  <label for="username">Username:</label>
+                  <input type="text" name="username" id="username" placeholder="votreusername" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="password">Mot de passe:</label>
+                  <input type="password" name="password" id="password" placeholder="*******" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="mail">Email:</label>
+                  <input type="email" name="mail" id="mail" placeholder="xyz@mail.com" required>
+                </div>
+                <div class="col-md-6">
+                  <label for="tel">Téléphone:</label>
+                  <input type="text" name="tel" id="tel" placeholder="123456789">
+                </div>
+                  <button type="submit" class="add-btn">Ajouter</button>
+                </div>
+              </form>
+              </section>
+        </section>
+    </div>
 </body>
 </html>
