@@ -201,14 +201,34 @@ app.post("/user/edit", (req, res) => {
 
 // Upload profile picture (User)
 app.post("/user/upload-profile", upload.single("profilePic"), (req, res) => {
+    // Check if file was uploaded
+    if (!req.file) {
+        return res.status(400).send("No file uploaded. Please try again.");
+    }
+
+    // Check if user session exists
+    if (!req.session || !req.session.user) {
+        return res.status(403).send("User not authenticated.");
+    }
+
     const userId = req.session.user.id;
     const profilePath = `/uploads/${req.file.filename}`;
 
-    db.query("UPDATE users SET profilePicture = ? WHERE id = ?", [profilePath, userId], (err) => {
-        if (err) throw err;
-        req.session.user.profilePicture = profilePath;
-        res.redirect("/user");
-    });
+    // Update profile picture in the database
+    db.query(
+        "UPDATE users SET profilePicture = ? WHERE id = ?", 
+        [profilePath, userId], 
+        (err) => {
+            if (err) {
+                console.error("Database error:", err);
+                return res.status(500).send("An error occurred while updating the profile picture.");
+            }
+
+            // Update session with new profile picture path
+            req.session.user.profilePicture = profilePath;
+            res.redirect("/user");
+        }
+    );
 });
 
 // Logout

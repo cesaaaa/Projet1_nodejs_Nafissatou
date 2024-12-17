@@ -7,7 +7,7 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f7fc;
+    background-color: #c1ede1;
     color: #333;
     padding: 30px;
     font-size: 8px;
@@ -31,7 +31,7 @@ header {
 h1 {
     font-size: 1.6rem;
     color: black;
-    font-family: Cambria, serif sans-serif;
+    font-family: "Cambria", serif sans-serif;
 }
 
 .logout {
@@ -51,7 +51,7 @@ h1 {
     flex-wrap: wrap;
     gap: 15px;
     margin-bottom: 29px;
-    background-color: #fff;
+    background-color: #d6e9e4;
     padding: 12px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -84,11 +84,12 @@ h1 {
 .container {
     display: flex;
     gap: 20px;
+    /* background-color: #d6e9e4; */
 }
 
 .table-container {
     flex: 2;
-    background-color: #fff;
+    background-color: #d6e9e4;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -128,17 +129,17 @@ table th {
 }
 
 .actions button:not(.delete) {
-    background-color: #ff9800;
+    background-color: #9fd2e1;
     color: white;
 }
 
 .actions button.delete {
-    background-color: #FF5733;
+    background-color: rgb(54, 53, 53);
     color: white;
 }
 
 .actions button:hover {
-    background-color: #FF4500;
+    background-color: rgb(43, 42, 42);
 }
 
 .pagination {
@@ -171,7 +172,7 @@ table th {
 /* Add User Form  */
 .add-user-container {
     flex: 1;
-    background-color: #fff;
+    background-color: #d6e9e4;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
